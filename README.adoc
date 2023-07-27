@@ -7,6 +7,7 @@ Automation to deploy the AMQ Streams Monitoring Demo.
 * OpenShift User Workload Monitoring
 * AMQ Streams Operator
 * Grafana Operator
+* https://github.com/provectus/kafka-ui[Kafka-ui]
 
 == Install The Demo Using Ansible
 
