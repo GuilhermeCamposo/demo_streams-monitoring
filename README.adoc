@@ -10,6 +10,16 @@ Automation to deploy the AMQ Streams Monitoring Demo.
 
 == Install The Demo Using Ansible
 
+=== Ansible prerequisites
+
+Make sure you have Ansible installed and with all dependencies before running the playbook.
+
+----
+sudo yum install ansible
+sudo pip3 install openshift
+ansible-galaxy collection install kubernetes.core
+----
+
 === Parameters
 
 [options="header"]
@@ -21,11 +31,8 @@ Automation to deploy the AMQ Streams Monitoring Demo.
 
 
 === Deploying the demo
-----
-sudo yum install ansible
-sudo pip3 install openshift
-ansible-galaxy collection install kubernetes.core
 
+----
 token=REPLACE_ME
 server=REPLACE_ME
 

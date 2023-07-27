@@ -1,0 +1,66 @@
+- name: Get kafka-ui user Secret
+  kubernetes.core.k8s_info:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: false
+    kind: Secret
+    name: "ui"
+    namespace: '{{ cluster_project }}'
+    api_version: v1
+  register: r_ui_user_secret
+  until:
+    - r_ui_user_secret.resources is defined
+  retries: 10
+  delay: 15
+
+- name: Set kafka-ui authentication token
+  ansible.builtin.set_fact:
+    sasl_jaas_config: "{{ r_ui_user_secret.resources[0].data['sasl.jaas.config'] | b64decode }}"
+  when:
+    - r_grafana_secret.resources[0].data is defined
+
+- name: Evaluate kafka-ui ConfigMap
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    namespace: '{{ cluster_project }}'
+    state: present
+    resource_definition: "{{ lookup('template', 'kafka-ui-configmap.yml.j2') }}"
+  register: _kafka
+  retries: 10
+  delay: 10
+  until: not _kafka.failed
+
+- name: Add stable chart repo
+  kubernetes.core.helm_repository:
+    name: kafka-ui
+    repo_url: "https://provectus.github.io/kafka-ui-charts"
+
+- name: Deploy latest version of kafka-ui chart
+  kubernetes.core.helm:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    name: kafka-ui
+    chart_ref: kafka-ui/kafka-ui
+    release_namespace: '{{ cluster_project }}'
+    create_namespace: true
+    set_values:
+      - value: yamlApplicationConfigConfigMap.name=kafka-ui-config
+        value_type: string
+      - value: yamlApplicationConfigConfigMap.keyName=config.yml
+        value_type: string
+
+- name: Evaluate kafka-ui Route
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    namespace: '{{ cluster_project }}'
+    state: present
+    resource_definition: "{{ lookup('file', 'route.yml') }}"
+  register: _kafka
+  retries: 10
+  delay: 10
+  until: not _kafka.failed

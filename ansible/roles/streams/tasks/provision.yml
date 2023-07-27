@@ -1,5 +1,5 @@
-- name: Evaluate {{ cluster_project }} Namespace
-  k8s:
+- name: Evaluate Namespace {{ cluster_project }}
+  kubernetes.core.k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
     validate_certs: false
@@ -15,7 +15,7 @@
 
 - name: Evaluate Operator Group
   when: not delete_demo
-  k8s:
+  kubernetes.core.k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
     validate_certs: false
@@ -25,13 +25,13 @@
     definition:
       metadata:
         name: '{{ cluster_project }}-operatorgroup'
-        namespace: '{{ cluster_project}}'
+        namespace: '{{ cluster_project }}'
       spec:
         targetNamespaces:
-        - '{{ cluster_project }}'
+          - '{{ cluster_project }}'
 
 - name: Evaluate AMQ Streams Operator
-  k8s:
+  kubernetes.core.k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
     validate_certs: false
@@ -50,7 +50,7 @@
         sourceNamespace: openshift-marketplace
 
 - name: Wait for AMQ Streams operator to be running
-  k8s_info:
+  kubernetes.core.k8s_info:
     api_key: '{{ token }}'
     host: '{{ server }}'
     validate_certs: false
@@ -68,7 +68,7 @@
   until: r_streams_pod.resources | list | length == 1
 
 - name: Evaluate Cluster ConfigMap
-  k8s:
+  kubernetes.core.k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
     validate_certs: false
@@ -77,7 +77,7 @@
     resource_definition: "{{ lookup('file', 'metrics-cm.yml') }}"
 
 - name: Evaluate Cluster Instance
-  k8s:
+  kubernetes.core.k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
     validate_certs: false
@@ -86,7 +86,7 @@
     resource_definition: "{{ lookup('file', 'cluster.yml') }}"
 
 - name: Wait for AMQ Streams cluster to be running
-  k8s_info:
+  kubernetes.core.k8s_info:
     api_key: '{{ token }}'
     host: '{{ server }}'
     validate_certs: false

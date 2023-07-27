@@ -4,9 +4,9 @@ metadata:
   name: my-cluster
 spec:
   kafka:
-    rack:
-      topologyKey: topology.kubernetes.io/zone
-    version: 3.3.1
+    # rack:
+    #   topologyKey: topology.kubernetes.io/zone
+    version: 3.4.0
     replicas: 3
     authorization:
       type: simple
@@ -39,7 +39,7 @@ spec:
       transaction.state.log.min.isr: 2
       default.replication.factor: 3
       min.insync.replicas: 2
-      inter.broker.protocol.version: "3.1"
+      inter.broker.protocol.version: "3.3"
     storage:
       type: jbod
       volumes:
@@ -54,8 +54,8 @@ spec:
           name: kafka-metrics
           key: kafka-metrics-config.yml
   zookeeper:
-    rack:
-      topologyKey: topology.kubernetes.io/zone
+    # rack:
+    #   topologyKey: topology.kubernetes.io/zone
     replicas: 3
     readinessProbe:
       initialDelaySeconds: 15

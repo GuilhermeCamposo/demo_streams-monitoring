@@ -1,5 +1,5 @@
 - name: Evaluate User Workload Monitoring
-  k8s:
+  kubernetes.core.k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
     validate_certs: false

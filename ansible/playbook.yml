@@ -5,17 +5,29 @@
     grafana_user: admin
     grafana_password: admin
     insecure_skip_tls_verify: true
+    verify_tls: false
     delete_demo: false
   tasks:
 
+    - name: Check Required Parameters
+      ansible.builtin.fail:
+        msg: "This playbook requires 'server' and 'token' to be defined"
+      when:
+        - (server is undefined) or (token is undefined) or (server | length == 0) or (token | length == 0)
+      ignore_errors: false
+
     - name: Define domain
-      set_fact:
-        domain : "{{ server | regex_replace('https://api.') | regex_replace(':6443')   }}"
+      ansible.builtin.set_fact:
+        domain: "{{ server | regex_replace('https://api.') | regex_replace(':6443') }}"
 
     - name: Include AMQ Streams role
-      include_role:
+      ansible.builtin.include_role:
         name: streams
 
     - name: Include Monitoring role
-      include_role:
+      ansible.builtin.include_role:
         name: monitoring
+
+    - name: Include kafka-ui role
+      ansible.builtin.include_role:
+        name: kafka-ui

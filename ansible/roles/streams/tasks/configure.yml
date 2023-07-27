@@ -1,35 +1,24 @@
-- name: Evaluate User Producer
-  k8s:
+- name: Evaluate Users 
+  kubernetes.core.k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
     validate_certs: false
     state: present
     namespace: '{{ cluster_project }}'
-    resource_definition: "{{ lookup('file', 'producer-user.yml') }}"
-
-- name: Evaluate User Processor
-  k8s:
-    api_key: '{{ token }}'
-    host: '{{ server }}'
-    validate_certs: false
-    state: present
-    namespace: '{{ cluster_project }}'
-    resource_definition: "{{ lookup('file', 'processor-user.yml') }}"
+    resource_definition: "{{ lookup('file', item ) }}"
+  loop:
+    - processor-user.yml
+    - producer-user.yml
+    - kafka-ui_user.yml
 
 - name: Evaluate a_quotes Topic
-  k8s:
+  kubernetes.core.k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
     validate_certs: false
     state: present
     namespace: '{{ cluster_project }}'
-    resource_definition: "{{ lookup('file', 'quote-topic.yml') }}"
-
-- name: Evaluate a_quote_requests Topic
-  k8s:
-    api_key: '{{ token }}'
-    host: '{{ server }}'
-    validate_certs: false
-    state: present
-    namespace: '{{ cluster_project }}'
-    resource_definition: "{{ lookup('file', 'quote-request-topic.yml') }}"
+    resource_definition: "{{ lookup('file', item ) }}"
+  loop:
+    - quote-topic.yml
+    - quote-request-topic.yml  

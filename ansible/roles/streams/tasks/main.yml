@@ -1,12 +1,12 @@
 - name: Provision AMQ Streams
-  include_tasks: provision.yml
+  ansible.builtin.include_tasks: provision.yml
   when:
-  - not delete_demo
+    - not delete_demo
 
 - name: Configure AMQ Streams
-  include_tasks: configure.yml
+  ansible.builtin.include_tasks: configure.yml
   when:
-  - not delete_demo
+    - not delete_demo
 
 # - name: Delete Monitoring
 #   include_tasks: delete.yml

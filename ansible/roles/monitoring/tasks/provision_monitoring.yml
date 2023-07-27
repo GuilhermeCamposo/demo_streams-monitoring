@@ -1,5 +1,5 @@
 - name: Evaluate User Workload Monitoring
-  k8s:
+  kubernetes.core.k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
     validate_certs: false
@@ -15,7 +15,7 @@
           enableUserWorkload: true
 
 - name: Evaluate Grafana Operator
-  k8s:
+  kubernetes.core.k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
     validate_certs: false
@@ -32,10 +32,9 @@
         name: grafana-operator
         source: community-operators
         sourceNamespace: openshift-marketplace
-        startingCSV: grafana-operator.v4.2.0
 
 - name: Wait Grafana Operator
-  k8s_info:
+  kubernetes.core.k8s_info:
     api_key: '{{ token }}'
     host: '{{ server }}'
     validate_certs: false
@@ -52,7 +51,7 @@
   until: r_grafana_pod.resources | list | length == 1
 
 - name: Evaluate Grafana Instance
-  k8s:
+  kubernetes.core.k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
     validate_certs: false
@@ -60,7 +59,7 @@
     resource_definition: "{{ lookup('template', 'grafana_instance.yml.j2') }}"
 
 - name: Wait Grafana Instance
-  k8s_info:
+  kubernetes.core.k8s_info:
     api_key: '{{ token }}'
     host: '{{ server }}'
     validate_certs: false
