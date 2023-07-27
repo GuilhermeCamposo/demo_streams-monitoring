@@ -21,7 +21,7 @@
   ansible.builtin.set_fact:
     secret_name: "{{ item['metadata']['name'] }}"
   loop: "{{ secrets_list.resources }}"
-  when: item['metadata']['name'] | regex_search('grafana-serviceaccount-token.')
+  when: item['metadata']['name'] | regex_search('grafana-sa-token.')
   no_log: true
 
 - name: Get Grafana ServiceAccount Token
@@ -62,7 +62,7 @@
         name: cluster-monitoring-view
       subjects:
         - kind: ServiceAccount
-          name: grafana-serviceaccount
+          name: grafana-sa
           namespace: '{{ cluster_project }}'
 
 - name: Evaluate Grafana Datasource

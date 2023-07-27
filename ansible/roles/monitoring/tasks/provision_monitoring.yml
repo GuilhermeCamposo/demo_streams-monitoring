@@ -27,7 +27,7 @@
         name: grafana-operator
         namespace: '{{ cluster_project }}'
       spec:
-        channel: v4
+        channel: v5
         installPlanApproval: Automatic
         name: grafana-operator
         source: community-operators
