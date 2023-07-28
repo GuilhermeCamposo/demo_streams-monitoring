@@ -9,13 +9,16 @@ data:
       clusters:
         - name: my-cluster
           bootstrapServers: my-cluster-kafka-bootstrap.{{ cluster_project }}.svc.cluster.local:9092
-          # properties:
-          #   security.protocol: SASL_SSL
-          #   sasl.mechanism: SCRAM-SHA-512        
-          #   sasl.jaas.config: {{ sasl_jaas_config }}
+          properties:
+            security.protocol: SASL_SSL
+            sasl.mechanism: SCRAM-SHA-512        
+            sasl.jaas.config: {{ sasl_jaas_config }}
+            ssl.truststore.location: /tmp/certificates/client-truststore.jks
+            ssl.truststore.password: kafka1
     auth:
       type: disabled
     management:
       health:
         ldap:
           enabled: false
+

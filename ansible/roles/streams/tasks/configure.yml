@@ -21,4 +21,5 @@
     resource_definition: "{{ lookup('file', item ) }}"
   loop:
     - quote-topic.yml
-    - quote-request-topic.yml  
+    - quote-request-topic.yml
+  

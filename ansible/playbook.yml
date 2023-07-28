@@ -24,9 +24,9 @@
       ansible.builtin.include_role:
         name: streams
 
-    - name: Include Monitoring role
-      ansible.builtin.include_role:
-        name: monitoring
+    # - name: Include Monitoring role
+    #   ansible.builtin.include_role:
+    #     name: monitoring
 
     - name: Include kafka-ui role
       ansible.builtin.include_role:
