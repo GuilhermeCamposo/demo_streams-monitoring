@@ -1,10 +1,8 @@
 - name: Log in as super user with token on OpenShift 4
   ansible.builtin.command: "oc login --token={{ token }}  --server={{ server }} --insecure-skip-tls-verify={{ insecure_skip_tls_verify }}"
-  when:
-    - token is defined
-    - token is not none
-    - token|trim() != ""
   ignore_errors: false
+  register: my_output
+  changed_when: my_output.rc != 0
 
 - name: Set output_dir
   ansible.builtin.set_fact:
@@ -19,15 +17,20 @@
   ansible.builtin.file:
     path: "{{ output_dir }}"
     state: directory
-    mode: '0755'  
+    mode: '0755'
 
-- name: Extract Kafka CA 
+- name: Extract Kafka CA
   ansible.builtin.command: "oc extract -n {{ cluster_project }} secret/my-cluster-cluster-ca-cert --keys ca.crt --to {{ output_dir }}"
   ignore_errors: false
+  register: my_output
+  changed_when: my_output.rc != 0
 
 - name: Create store
-  ansible.builtin.command: "keytool -keystore {{ output_dir }}/client-truststore.jks -alias CARoot -import -file {{ output_dir }}/ca.crt -storepass kafka1 -noprompt"
+  ansible.builtin.command: |
+    keytool -keystore {{ output_dir }}/client-truststore.jks -alias CARoot -import -file {{ output_dir }}/ca.crt -storepass kafka1 -noprompt
   ignore_errors: false
+  register: my_output
+  changed_when: my_output.rc != 0
 
 - name: Check store secret
   kubernetes.core.k8s:
@@ -42,7 +45,9 @@
 
 - name: Create store secret
   ansible.builtin.command: "oc create secret generic kafka-client-store --from-file={{ output_dir }}/client-truststore.jks"
-  ignore_errors: true
+  ignore_errors: false
+  register: my_output
+  changed_when: my_output.rc != 0
 
 - name: Get kafka-ui user Secret
   kubernetes.core.k8s_info:

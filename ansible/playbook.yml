@@ -8,7 +8,6 @@
     verify_tls: false
     delete_demo: false
   tasks:
-
     - name: Check Required Parameters
       ansible.builtin.fail:
         msg: "This playbook requires 'server' and 'token' to be defined"
@@ -24,9 +23,9 @@
       ansible.builtin.include_role:
         name: streams
 
-    # - name: Include Monitoring role
-    #   ansible.builtin.include_role:
-    #     name: monitoring
+    - name: Include Monitoring role
+      ansible.builtin.include_role:
+        name: monitoring
 
     - name: Include kafka-ui role
       ansible.builtin.include_role:

@@ -1,11 +1,11 @@
-- name: Evaluate Users 
+- name: Evaluate Users
   kubernetes.core.k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
     validate_certs: false
     state: present
     namespace: '{{ cluster_project }}'
-    resource_definition: "{{ lookup('file', item ) }}"
+    resource_definition: "{{ lookup('file', item) }}"
   loop:
     - processor-user.yml
     - producer-user.yml
@@ -18,8 +18,7 @@
     validate_certs: false
     state: present
     namespace: '{{ cluster_project }}'
-    resource_definition: "{{ lookup('file', item ) }}"
+    resource_definition: "{{ lookup('file', item) }}"
   loop:
     - quote-topic.yml
     - quote-request-topic.yml
-  
