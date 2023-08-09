@@ -1,6 +1,7 @@
 package org.acme.kafka.producer;
 
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -17,6 +18,8 @@ import io.smallrye.mutiny.Multi;
 @Path("/quotes")
 public class QuotesResource {
 
+    private static final Logger LOG = Logger.getLogger(QuotesResource.class.getName());
+
     @Channel("requests")
     Emitter<String> quoteRequestEmitter;
 
@@ -27,9 +30,12 @@ public class QuotesResource {
     @Path("/request")
     @Produces(MediaType.TEXT_PLAIN)
     public String createRequest() {
+
+        LOG.info("sending message to kafka");
         UUID uuid = UUID.randomUUID();
         quoteRequestEmitter.send(uuid.toString());
-        return uuid.toString();
+
+        return "message sent: " + uuid.toString();
     }
 
     @Channel("quotes")
@@ -41,6 +47,8 @@ public class QuotesResource {
     @GET
     @Produces(MediaType.SERVER_SENT_EVENTS) // denotes that server side events (SSE) will be produced
     public Multi<Quote> stream() {
+
+        LOG.info("opening stream");
         return quotes.log();
     }
 }
