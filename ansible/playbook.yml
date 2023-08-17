@@ -1,7 +1,7 @@
 - hosts: localhost
   name: Install AMQ Streams Monitoring Demo
   vars:
-    cluster_project: kafka-cluster
+    cluster_project: kafka-poc
     grafana_user: admin
     grafana_password: admin
     insecure_skip_tls_verify: true
