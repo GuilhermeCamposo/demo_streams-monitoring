@@ -19,14 +19,14 @@
       ansible.builtin.set_fact:
         domain: "{{ server | regex_replace('https://api.') | regex_replace(':6443') }}"
 
-    - name: Include AMQ Streams role
-      ansible.builtin.include_role:
-        name: streams
+    # - name: Include AMQ Streams role
+    #   ansible.builtin.include_role:
+    #     name: streams
 
     - name: Include Monitoring role
       ansible.builtin.include_role:
         name: monitoring
 
-    - name: Include kafka-ui role
-      ansible.builtin.include_role:
-        name: kafka-ui
+    # - name: Include kafka-ui role
+    #   ansible.builtin.include_role:
+    #     name: kafka-ui

@@ -1,18 +1,18 @@
-- name: Evaluate User Workload Monitoring
-  kubernetes.core.k8s:
-    api_key: '{{ token }}'
-    host: '{{ server }}'
-    validate_certs: false
-    state: present
-    kind: ConfigMap
-    api_version: v1
-    definition:
-      metadata:
-        name: cluster-monitoring-config
-        namespace: openshift-monitoring
-      data:
-        config.yaml: |
-          enableUserWorkload: true
+# - name: Evaluate User Workload Monitoring
+#   kubernetes.core.k8s:
+#     api_key: '{{ token }}'
+#     host: '{{ server }}'
+#     validate_certs: false
+#     state: present
+#     kind: ConfigMap
+#     api_version: v1
+#     definition:
+#       metadata:
+#         name: cluster-monitoring-config
+#         namespace: openshift-monitoring
+#       data:
+#         config.yaml: |
+#           enableUserWorkload: true
 
 - name: Evaluate Grafana Operator
   kubernetes.core.k8s:
