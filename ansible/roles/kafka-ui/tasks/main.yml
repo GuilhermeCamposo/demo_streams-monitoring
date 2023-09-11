@@ -44,7 +44,7 @@
     api_version: v1
 
 - name: Create store secret
-  ansible.builtin.command: "oc create secret generic kafka-client-store --from-file={{ output_dir }}/client-truststore.jks"
+  ansible.builtin.command: "oc create secret generic kafka-client-store --from-file={{ output_dir }}/client-truststore.jks -n {{ cluster_project }}"
   ignore_errors: false
   register: my_output
   changed_when: my_output.rc != 0
