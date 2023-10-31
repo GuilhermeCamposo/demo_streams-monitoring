@@ -80,4 +80,7 @@
     validate_certs: false
     state: present
     namespace: '{{ cluster_project }}'
-    resource_definition: "{{ lookup('file', 'grafana_kafka_dashboard.yml') }}"
+    resource_definition: "{{ lookup('file', item) }}"
+  loop: 
+    - grafana_kafka_dashboard.yml
+    - grafana_operator_dashboard.yml

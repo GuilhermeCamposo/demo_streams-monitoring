@@ -87,3 +87,7 @@ Then start sending requests
 ----
 curl  http://localhost:8080/quotes/request -X POST
 ----
+
+== Additional information
+
+To add more dashboards for other Strimzi's components, check this https://github.com/strimzi/strimzi-kafka-operator/tree/main/examples/metrics/grafana-dashboards[git repo]

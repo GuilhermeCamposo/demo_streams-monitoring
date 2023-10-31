@@ -15,30 +15,22 @@ spec:
           type: topic
           name: a_quote_requests
           patternType: literal
-        operation: Read
         host: "*"
-      - resource:
-          type: topic
-          name: a_quote_requests
-          patternType: literal
-        operation: Describe
-        host: "*"
+        operations: 
+          - Read
+          - Describe
       - resource:
           type: group
           name: a_request_group
           patternType: literal
-        operation: Read
-        host: "*"
-      # Example Producer Acls for topic my-topic
-      - resource:
-          type: topic
-          name: a_quotes
-          patternType: literal
-        operation: Write
+        operations: 
+          - Read
         host: "*"
       - resource:
           type: topic
           name: a_quotes
           patternType: literal
-        operation: Describe
+        operations: 
+          - Write
+          - Describe
         host: "*"

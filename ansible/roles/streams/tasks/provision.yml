@@ -93,9 +93,10 @@
     api_version: v1
     kind: Pod
     namespace: '{{ cluster_project }}'
-    name: my-cluster-kafka-2
     field_selectors:
       - status.phase=Running
+    label_selectors:
+      - strimzi.io/component-type=kafka-exporter  
   register: r_streams_pod
   retries: 10
   delay: 10

@@ -14,29 +14,20 @@ spec:
           type: topic
           name: "*"
           patternType: literal
-        operation: Read
-        host: "*"
-      - resource:
-          type: topic
-          name: "*"
-          patternType: literal
-        operation: DescribeConfigs
+        operations: 
+          - Read
+          - DescribeConfigs
         host: "*"
       - resource:
           type: group
           name: "*"
           patternType: literal
-        operation: Describe
+        operations: 
+          - Describe
         host: "*"
       - resource:
           type: cluster
-          name: "kafka-cluster"
-          patternType: literal
-        operation: Describe
-        host: "*"
-      - resource:
-          type: cluster
-          name: "kafka-cluster"
-          patternType: literal
-        operation: DescribeConfigs
+        operations: 
+          - Describe
+          - DescribeConfigs
         host: "*"
