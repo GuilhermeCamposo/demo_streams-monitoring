@@ -56,7 +56,8 @@
     host: '{{ server }}'
     validate_certs: false
     state: present
-    resource_definition: "{{ lookup('template', 'grafana_instance.yml.j2') }}"
+    namespace: '{{ cluster_project }}'
+    resource_definition: "{{ lookup('file', 'grafana_oauth_instance.yml') }}"
 
 - name: Wait Grafana Instance
   kubernetes.core.k8s_info:
