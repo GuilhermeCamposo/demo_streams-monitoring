@@ -1,7 +1,7 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaUser
 metadata:
-  name: processor
+  name: consumer
   labels:
     strimzi.io/cluster: my-cluster
 spec:
@@ -10,7 +10,6 @@ spec:
   authorization:
     type: simple
     acls:
-      # Example consumer Acls for topic my-topic suing consumer group my-group
       - resource:
           type: topic
           name: a_quote_requests

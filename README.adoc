@@ -42,6 +42,10 @@ ansible-playbook -e token=${token} -e server=${server} playbook.yml
 
 == Using the applications
 
+This demo comes with to applications that simulates a consumer and producer relationship. Those applications can be run using a terminal. Follow the instructions below:
+
+=== Get the certificate for TLS connection
+
 To connect the applications from outside the OpenShift cluster you first need the certificate for the TLS connection:
 
 ----
@@ -64,14 +68,14 @@ BOOTSTRAP_URL=$(oc get route my-cluster-kafka-bootstrap -n $PROJECT -o jsonpath=
 mvn clean quarkus:dev -Dbootstrap.url=$BOOTSTRAP_URL  -Dproducer.pwd=$PRODUCER_PWD
 ----
 
-=== Starting the Processor
+=== Starting the Consumer
 
 ----
 PROJECT=kafka-cluster
-PROCESSOR_PWD=$(oc get secret processor -n $PROJECT -o jsonpath='{.data.password}' | base64 -d )
+CONSUMER_PWD=$(oc get secret consumer -n $PROJECT -o jsonpath='{.data.password}' | base64 -d )
 BOOTSTRAP_URL=$(oc get route my-cluster-kafka-bootstrap -n $PROJECT -o jsonpath='{.spec.host}'):443
 
-mvn clean quarkus:dev -Dbootstrap.url=$BOOTSTRAP_URL  -Dprocessor.pwd=$PROCESSOR_PWD
+mvn clean quarkus:dev -Dbootstrap.url=$BOOTSTRAP_URL  -Dconsumer.pwd=$CONSUMER_PWD
 ----
 
 === Testing

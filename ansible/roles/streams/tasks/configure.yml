@@ -7,7 +7,7 @@
     namespace: '{{ cluster_project }}'
     resource_definition: "{{ lookup('file', item) }}"
   loop:
-    - processor-user.yml
+    - consumer-user.yml
     - producer-user.yml
     - kafka-ui_user.yml
 
