@@ -4,3 +4,4 @@ quay-secret.yml
 extra-vars.yml
 target/
 *.iml
+.vscode
