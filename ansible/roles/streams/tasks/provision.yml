@@ -98,6 +98,6 @@
     label_selectors:
       - strimzi.io/component-type=kafka-exporter  
   register: r_streams_pod
-  retries: 10
+  retries: 20
   delay: 10
   until: r_streams_pod.resources | list | length == 1
