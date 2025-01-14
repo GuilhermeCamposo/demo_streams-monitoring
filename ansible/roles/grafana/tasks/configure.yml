@@ -1,0 +1,75 @@
+- name: Wait for Grafana SA
+  kubernetes.core.k8s_info:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    api_version: v1
+    kind: ServiceAccount
+    name: grafana-sa
+    namespace: '{{ grafana_project }}'
+  register: _cr
+  until: _cr.resources | list | length == 1
+  retries: 10
+  delay: 30
+
+- name: Log in as super user with token on OpenShift 4
+  ansible.builtin.command: "oc login --token={{ token }}  --server={{ server }} --insecure-skip-tls-verify={{ insecure_skip_tls_verify }}"
+  when:
+    - token is defined
+    - token is not none
+    - token|trim() != ""
+  ignore_errors: false
+  register: r_login
+  changed_when: r_login.rc != 0
+
+- name: Generate Long Live Token for SA
+  ansible.builtin.command: "oc create token {{ grafana_sa_name }} --duration=100000h -n {{ grafana_project }}"
+  when:
+    - token is defined
+    - token is not none
+    - token|trim() != ""
+  ignore_errors: false
+  register: r_create_token
+  changed_when: r_create_token.rc != 0
+
+- name: Set SA Token
+  ansible.builtin.set_fact:
+    grafana_token: "{{ r_create_token.stdout }}"
+
+- name: Evaluate Grafana ServiceAccount permissons
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    state: present
+    api_version: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    definition:
+      metadata:
+        name: thanos-metric-viewer
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: cluster-monitoring-view
+      subjects:
+        - kind: ServiceAccount
+          name: "{{ grafana_sa_name }}"
+          namespace: '{{ grafana_project }}'
+
+- name: Evaluate Grafana Datasource
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    state: present
+    namespace: '{{ grafana_project }}'
+    resource_definition: "{{ lookup('template', 'grafana-datasource.yml.j2') }}"
+
+- name: Evaluate Prometheus Pod Monitor
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    state: present
+    namespace: '{{ grafana_project }}'
+    resource_definition: "{{ lookup('template', 'strimzi_pod_monitor.yml.j2') }}"

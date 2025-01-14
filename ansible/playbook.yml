@@ -2,6 +2,7 @@
   name: Install AMQ Streams Monitoring Demo
   vars:
     cluster_project: kafka-cluster
+    grafana_project: '{{ cluster_project  }}'
     grafana_user: admin
     grafana_password: admin
     insecure_skip_tls_verify: true
@@ -23,10 +24,10 @@
       ansible.builtin.include_role:
         name: streams
 
-    - name: Include Monitoring role
+    - name: Include Grafana role
       ansible.builtin.include_role:
-        name: monitoring
+        name: grafana
 
-    - name: Include kafka-ui role
-      ansible.builtin.include_role:
-        name: kafka-ui
+    # - name: Include kafka-ui role
+    #   ansible.builtin.include_role:
+    #     name: kafka-ui

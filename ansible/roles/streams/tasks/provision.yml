@@ -43,7 +43,7 @@
         name: amq-streams
         namespace: '{{ cluster_project }}'
       spec:
-        channel: stable
+        channel: '{{ streams_operator_channel }}'
         installPlanApproval: Automatic
         name: amq-streams
         source: redhat-operators
@@ -83,7 +83,7 @@
     validate_certs: false
     state: present
     namespace: '{{ cluster_project }}'
-    resource_definition: "{{ lookup('file', 'cluster.yml') }}"
+    resource_definition: "{{ lookup('template', 'cluster.yml.j2') }}"
 
 - name: Wait for AMQ Streams cluster to be running
   kubernetes.core.k8s_info:
@@ -96,7 +96,7 @@
     field_selectors:
       - status.phase=Running
     label_selectors:
-      - strimzi.io/component-type=kafka-exporter  
+      - strimzi.io/component-type=kafka-exporter
   register: r_streams_pod
   retries: 20
   delay: 10

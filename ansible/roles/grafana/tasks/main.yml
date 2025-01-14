@@ -1,0 +1,5 @@
+- name: Provision User Monitoring
+  ansible.builtin.include_tasks: provision.yml
+
+- name: Configure User Monitoring
+  ansible.builtin.include_tasks: configure.yml

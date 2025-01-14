@@ -5,6 +5,7 @@ metadata:
   labels:
     config.openshift.io/inject-trusted-cabundle: "true"
   name: ocp-injected-certs
+  namespace: '{{ grafana_project }}'
 ---
 apiVersion: v1
 data:
@@ -12,46 +13,28 @@ data:
 kind: Secret
 metadata:
   name: grafana-proxy
+  namespace: '{{ grafana_project }}'
 type: Opaque
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: grafana-proxy
-rules:
-  - verbs:
-      - create
-    apiGroups:
-      - authentication.k8s.io
-    resources:
-      - tokenreviews
-  - verbs:
-      - create
-    apiGroups:
-      - authorization.k8s.io
-    resources:
-      - subjectaccessreviews
 ---
 apiVersion: authorization.openshift.io/v1
 kind: ClusterRoleBinding
 metadata:
-  namespace: grafana
-  name: grafana-proxy
+  name: 'grafana-proxy'
 roleRef:
   kind: ClusterRole
   name: grafana-proxy
 subjects:
   - kind: ServiceAccount
-    name: grafana-sa
-    namespace: grafana
+    name: '{{ grafana_sa_name }}'
+    namespace: '{{ grafana_project }}'
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: Grafana
 metadata:
   name: grafana
+  namespace: '{{ grafana_project }}'
   labels:
-    dashboards: grafana-a
-    folders: grafana-a
+    apim-management: grafana
 spec:
   serviceAccount:
     metadata:
@@ -90,8 +73,8 @@ spec:
                 - '-http-address='
                 - '-email-domain=*'
                 - '-upstream=http://localhost:3000'
-                - '-openshift-sar={"resource": "namespaces", "verb": "get"}'
-                - '-openshift-delegate-urls={"/": {"resource": "namespaces", "verb": "get"}}'
+                - '-openshift-sar={"resource": "routes", "verb": "get"}'
+                - '-openshift-delegate-urls={"/": {"resource": "routes", "verb": "get"}}'
                 - '-tls-cert=/etc/tls/private/tls.crt'
                 - '-tls-key=/etc/tls/private/tls.key'
                 - '-client-secret-file=/var/run/secrets/kubernetes.io/serviceaccount/token'

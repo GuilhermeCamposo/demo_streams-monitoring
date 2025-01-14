@@ -1,0 +1,110 @@
+- name: Evaluate Namespace {{ grafana_project }}
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: false
+    api_version: v1
+    kind: Namespace
+    name: '{{ grafana_project }}'
+    state: present
+
+- name: Evaluate Group {{ grafana_project }}
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    state: present
+    kind: OperatorGroup
+    api_version: operators.coreos.com/v1
+    namespace: '{{ grafana_project }}'
+    definition:
+      metadata:
+        name: '{{ grafana_project }}-group'
+      spec:
+        targetNamespaces:
+          - '{{ grafana_project }}'
+
+- name: Evaluate User Workload Monitoring
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    state: present
+    kind: ConfigMap
+    api_version: v1
+    definition:
+      metadata:
+        name: cluster-monitoring-config
+        namespace: openshift-monitoring
+      data:
+        config.yaml: |
+          enableUserWorkload: true
+
+- name: Evaluate Grafana Operator
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    state: present
+    kind: Subscription
+    api_version: operators.coreos.com/v1alpha1
+    definition:
+      metadata:
+        name: grafana-operator
+        namespace: '{{ grafana_project }}'
+      spec:
+        channel: v5
+        installPlanApproval: Automatic
+        name: grafana-operator
+        source: community-operators
+        sourceNamespace: openshift-marketplace
+
+- name: Check if Grafana CRD exists
+  kubernetes.core.k8s_info:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    kind: CustomResourceDefinition
+    api_version: apiextensions.k8s.io/v1
+    name: grafanas.grafana.integreatly.org
+  register: crd_result
+  retries: 220
+  delay: 10
+  until: crd_result.resources | length > 0
+
+- name: Check Grafana CR
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    state: present
+    resource_definition: "{{ lookup('file', 'grafana-cr.yml') }}"
+
+- name: Check Grafana Instances
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    state: present
+    namespace: '{{ grafana_project }}'
+    resource_definition: "{{ lookup('template', 'grafana-oauth-instance.yml.j2') }}"
+
+- name: Check User Permission
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    state: present
+    resource_definition: "{{ lookup('template', 'grafana-crb.yml.j2') }}"
+
+- name: Evaluate Kafka Dashboard
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: false
+    state: present
+    namespace: '{{ cluster_project }}'
+    resource_definition: "{{ lookup('file', item) }}"
+  loop: 
+    - grafana_kafka_dashboard.yml
+    - grafana_operator_dashboard.yml
