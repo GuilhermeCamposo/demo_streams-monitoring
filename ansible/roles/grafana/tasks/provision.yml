@@ -97,7 +97,7 @@
     state: present
     resource_definition: "{{ lookup('template', 'grafana-crb.yml.j2') }}"
 
-- name: Evaluate Kafka Dashboard
+- name: Evaluate Kafka Dashboards
   kubernetes.core.k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
@@ -106,5 +106,7 @@
     namespace: '{{ cluster_project }}'
     resource_definition: "{{ lookup('file', item) }}"
   loop: 
-    - grafana_kafka_dashboard.yml
-    - grafana_operator_dashboard.yml
+    - dashboard_operator.yml
+    - dashboard_zookeeper.yml
+    - dashboard_kafka.yml
+    - dashboard_exporter.yml
