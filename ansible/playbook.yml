@@ -3,6 +3,7 @@
   vars:
     cluster_project: kafka-cluster
     grafana_project: '{{ cluster_project  }}'
+    console_project: '{{ cluster_project  }}'
     grafana_user: admin
     grafana_password: admin
     insecure_skip_tls_verify: true
@@ -20,6 +21,10 @@
       ansible.builtin.set_fact:
         domain: "{{ server | regex_replace('https://api.') | regex_replace(':6443') }}"
 
+    - name: Set Subdomain
+      ansible.builtin.set_fact:
+        route_subdomain: "apps.{{ domain }}"
+
     - name: Include AMQ Streams role
       ansible.builtin.include_role:
         name: streams
@@ -27,6 +32,10 @@
     - name: Include Grafana role
       ansible.builtin.include_role:
         name: grafana
+
+    - name: Include Console role
+      ansible.builtin.include_role:
+        name: console
 
     # - name: Include kafka-ui role
     #   ansible.builtin.include_role:

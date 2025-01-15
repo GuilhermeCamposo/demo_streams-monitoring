@@ -1,0 +1,56 @@
+- name: Evaluate Namespace {{ console_project }}
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: false
+    state: present
+    kind: Project
+    api_version: project.openshift.io/v1
+    definition:
+      metadata:
+        name: "{{ console_project }}"
+
+- name: Evaluate Console Operator
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: false
+    state: present
+    kind: Subscription
+    api_version: operators.coreos.com/v1alpha1
+    definition:
+      metadata:
+        name: amq-streams-console
+        namespace: openshift-operators
+      spec:
+        channel: alpha
+        installPlanApproval: Automatic
+        name: amq-streams-console
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace
+
+- name: Wait for AMQ Streams Console operator to be running
+  kubernetes.core.k8s_info:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: false
+    api_version: v1
+    kind: Pod
+    namespace: openshift-operators
+    label_selectors:
+      - app.kubernetes.io/instance=amq-streams-console-operator-v2.8.0-13
+    field_selectors:
+      - status.phase=Running
+  register: r_streams_pod
+  retries: 10
+  delay: 10
+  until: r_streams_pod.resources | list | length == 1
+
+- name: Evaluate Console CR
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: false
+    state: present
+    namespace: '{{ console_project }}'
+    resource_definition: "{{ lookup('template', 'console.yml.j2') }}"

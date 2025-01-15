@@ -14,7 +14,6 @@
           openshift.io/display-name: "AMQ Streams Monitoring Demo - Cluster"
 
 - name: Evaluate Operator Group
-  when: not delete_demo
   kubernetes.core.k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
@@ -24,7 +23,7 @@
     kind: OperatorGroup
     definition:
       metadata:
-        name: '{{ cluster_project }}-operatorgroup'
+        name: '{{ cluster_project }}-group'
         namespace: '{{ cluster_project }}'
       spec:
         targetNamespaces:
