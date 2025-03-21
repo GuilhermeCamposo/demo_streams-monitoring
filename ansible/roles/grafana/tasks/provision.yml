@@ -107,6 +107,5 @@
     resource_definition: "{{ lookup('file', item) }}"
   loop: 
     - dashboard_operator.yml
-    - dashboard_zookeeper.yml
     - dashboard_kafka.yml
     - dashboard_exporter.yml

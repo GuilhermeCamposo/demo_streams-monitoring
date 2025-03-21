@@ -1,5 +1,5 @@
-- hosts: localhost
-  name: Install AMQ Streams Monitoring Demo
+- name: Install AMQ Streams Monitoring Demo
+  hosts: localhost
   vars:
     cluster_project: kafka-cluster
     grafana_project: '{{ cluster_project  }}'
@@ -36,7 +36,3 @@
     - name: Include Console role
       ansible.builtin.include_role:
         name: console
-
-    # - name: Include kafka-ui role
-    #   ansible.builtin.include_role:
-    #     name: kafka-ui
