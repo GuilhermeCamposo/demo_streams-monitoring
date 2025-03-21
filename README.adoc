@@ -2,12 +2,18 @@
 
 Automation to deploy the AMQ Streams Monitoring Demo.
 
+[NOTE]
+====
+Last tested with OpenShift 4.17.
+====
+
 == Tools available
 
 * OpenShift User Workload Monitoring
 * AMQ Streams Operator
+* AMQ Streams Console
 * Grafana Operator
-* https://github.com/provectus/kafka-ui[Kafka-ui]
+
 
 == Install The Demo Using Ansible
 
@@ -80,13 +86,13 @@ mvn clean quarkus:dev -Dbootstrap.url=$BOOTSTRAP_URL  -Dconsumer.pwd=$CONSUMER_P
 
 === Testing
 
-First monitor the stream output
+First monitor the stream output:
 
 ----
 curl  http://localhost:8080/quotes
 ----
 
-Then start sending requests
+Then start sending requests:
 
 ----
 curl  http://localhost:8080/quotes/request -X POST
@@ -94,4 +100,4 @@ curl  http://localhost:8080/quotes/request -X POST
 
 == Additional information
 
-To add more dashboards for other Strimzi's components, check this https://github.com/strimzi/strimzi-kafka-operator/tree/main/examples/metrics/grafana-dashboards[git repo]
+To add more dashboards for other Strimzi's components, check this https://github.com/strimzi/strimzi-kafka-operator/tree/main/examples/metrics/grafana-dashboards[Git Repository].
