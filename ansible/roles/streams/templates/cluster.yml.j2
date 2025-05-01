@@ -22,7 +22,7 @@ spec:
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
-  name: my-cluster
+  name: {{ streams_kafka_cluster_name }}
   annotations:
     strimzi.io/kraft: enabled
     strimzi.io/node-pools: enabled
@@ -37,6 +37,12 @@ spec:
         port: 9092
         type: internal
         tls: false
+        authentication:
+          type: scram-sha-512
+      - name: registry
+        port: 9093
+        type: internal
+        tls: true
         authentication:
           type: scram-sha-512
       - name: external

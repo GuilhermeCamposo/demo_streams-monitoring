@@ -1,0 +1,14 @@
+kind: ApicurioRegistry
+apiVersion: registry.apicur.io/v1
+metadata:
+  name: registry
+spec:
+  configuration:
+    persistence: kafkasql
+    kafkasql:
+      bootstrapServers: {{ streams_kafka_cluster_name }}-kafka-bootstrap.{{ cluster_project }}.svc.cluster.local:9093
+      security:
+        scram:
+          truststoreSecretName: {{ streams_kafka_cluster_name }}-cluster-ca-cert
+          user: apicurio-user
+          passwordSecretName: apicurio-user   

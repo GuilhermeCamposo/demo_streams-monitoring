@@ -4,6 +4,8 @@
     cluster_project: kafka-cluster
     grafana_project: '{{ cluster_project  }}'
     console_project: '{{ cluster_project  }}'
+    apicurio_registry_project: '{{ cluster_project  }}'
+    streams_kafka_cluster_name: my-cluster
     grafana_user: admin
     grafana_password: admin
     insecure_skip_tls_verify: true
@@ -36,3 +38,10 @@
     - name: Include Console role
       ansible.builtin.include_role:
         name: console
+
+    - name: Include Service Registry
+      ansible.builtin.include_role:
+        name: apicurio-registry
+        apply:
+          tags: [registry]
+      tags: [registry]

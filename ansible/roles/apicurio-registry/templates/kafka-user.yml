@@ -1,0 +1,26 @@
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaUser
+metadata:
+  name: apicurio-user
+  labels:
+    strimzi.io/cluster: {{ streams_kafka_cluster_name }}
+spec:
+  authentication:
+    type: scram-sha-512
+  authorization:
+    acls:
+    - operations:
+        - Read
+        - Write
+      resource:
+        name: kafkasql-journal
+        patternType: literal
+        type: topic
+    - operations:
+        - Read
+        - Write
+      resource:
+        name: apicurio-registry-
+        patternType: prefix
+        type: group
+    type: simple    

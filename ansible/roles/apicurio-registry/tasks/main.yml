@@ -1,0 +1,81 @@
+- name: Evaluate namespace {{ apicurio_registry_project }}
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    api_version: v1
+    kind: Namespace
+    name: '{{ apicurio_registry_project }}'
+    state: present
+
+- name: Evaluate Service Registry Operator Group
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    state: present
+    kind: OperatorGroup
+    api_version: operators.coreos.com/v1
+    namespace: '{{ apicurio_registry_project }}'
+    definition:
+      metadata:
+        name: '{{ apicurio_registry_project }}-group'
+      spec:
+        targetNamespaces:
+          - '{{ apicurio_registry_project }}'
+
+- name: Evaluate Service Registry Subscription
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    state: present
+    namespace: '{{ apicurio_registry_project }}'
+    resource_definition: "{{ lookup('file', 'apicurio-registry-sub.yml') }}"
+
+- name: Wait for Service Registry Operator to install
+  kubernetes.core.k8s_info:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    api_version: apiextensions.k8s.io/v1
+    kind: CustomResourceDefinition
+    name: apicurioregistries.registry.apicur.io
+  register: crd_registry
+  until: crd_registry.resources | list | length == 1
+  retries: 10
+  delay: 30
+
+- name: Set Apicurio Registry
+  ansible.builtin.set_fact:
+    registry_host: "registry.{{ apicurio_registry_project }}.router-default.{{ route_subdomain }}"
+
+- name: Evaluate Kafka resources
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    state: present
+    namespace: '{{ apicurio_registry_project }}'
+    resource_definition: "{{ lookup('template', item) }}"
+  loop:
+    - kafka-topic.yml
+    - kafka-user.yml
+
+- name: Evaluate the Service Registry CR
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    state: present
+    namespace: '{{ apicurio_registry_project }}'
+    resource_definition: "{{ lookup('template', 'registry.yml.j2') }}"
+
+- name: Wait for Service Registry to be running
+  ansible.builtin.uri:
+    url: http://{{ registry_host }}
+    status_code: '200'
+  register: result
+  until: result.status == 200
+  retries: 30
+  delay: 20
