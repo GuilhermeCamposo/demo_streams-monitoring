@@ -80,8 +80,9 @@ mvn clean quarkus:dev -Dbootstrap.url=$BOOTSTRAP_URL  -Dproducer.pwd=$PRODUCER_P
 PROJECT=kafka-cluster
 CONSUMER_PWD=$(oc get secret consumer -n $PROJECT -o jsonpath='{.data.password}' | base64 -d )
 BOOTSTRAP_URL=$(oc get route my-cluster-kafka-bootstrap -n $PROJECT -o jsonpath='{.spec.host}'):443
+REGISTRY_URL=$(oc get routes -l app=registry -o jsonpath='{.items[0].spec.host}')
 
-mvn clean quarkus:dev -Dbootstrap.url=$BOOTSTRAP_URL  -Dconsumer.pwd=$CONSUMER_PWD
+mvn clean quarkus:dev -Dbootstrap.url=$BOOTSTRAP_URL  -Dconsumer.pwd=$CONSUMER_PWD -Dregistry.url=$REGISTRY_URL
 ----
 
 === Testing

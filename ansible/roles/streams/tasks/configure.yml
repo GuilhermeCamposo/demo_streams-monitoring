@@ -22,3 +22,4 @@
   loop:
     - quote-topic.yml
     - quote-request-topic.yml
+    - movies-topic.yml

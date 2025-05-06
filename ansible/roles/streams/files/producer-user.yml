@@ -33,3 +33,11 @@ spec:
           - Write
           - Describe
         host: "*"
+      - resource:
+          type: topic
+          name: movies
+          patternType: literal
+        operations: 
+          - Write
+          - Describe
+        host: "*"

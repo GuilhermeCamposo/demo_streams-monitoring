@@ -9,19 +9,19 @@ import org.acme.kafka.quarkus.Movie;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 
-// @Path("/movies")
+@Path("/movies")
 public class MoviesResource {
 
-  // private static final Logger LOGGER = Logger.getLogger(MoviesResource.class);
+  private static final Logger LOGGER = Logger.getLogger(MoviesResource.class);
 
-  // @Channel("movies")
-  // Emitter<Movie> emitter;
+  @Channel("movies")
+  Emitter<Movie> emitter;
 
-  // @POST
-  // public Response enqueueMovie(Movie movie) {
-  //     LOGGER.infof("Sending movie %s to Kafka", movie.getTitle());
-  //     emitter.send(movie);
-  //     return Response.accepted().build();
-  // }
+  @POST
+  public Response enqueueMovie(Movie movie) {
+      LOGGER.infof("Sending movie %s to Kafka", movie.getTitle());
+      emitter.send(movie);
+      return Response.accepted().build();
+  }
     
 }
