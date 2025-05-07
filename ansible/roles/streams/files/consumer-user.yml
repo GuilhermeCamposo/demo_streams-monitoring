@@ -12,6 +12,21 @@ spec:
     acls:
       - resource:
           type: topic
+          name: movies
+          patternType: literal
+        host: "*"
+        operations: 
+          - Read
+          - Describe
+      - resource:
+          type: group
+          name: movies_group
+          patternType: literal
+        operations: 
+          - Read
+        host: "*"    
+      - resource:
+          type: topic
           name: a_quote_requests
           patternType: literal
         host: "*"

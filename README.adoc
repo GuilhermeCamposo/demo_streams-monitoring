@@ -70,8 +70,9 @@ The keystore will be used by the applications to trust the certificate in the co
 PROJECT=kafka-cluster
 PRODUCER_PWD=$(oc get secret producer -n $PROJECT  -o jsonpath='{.data.password}' | base64 -d )
 BOOTSTRAP_URL=$(oc get route my-cluster-kafka-bootstrap -n $PROJECT -o jsonpath='{.spec.host}'):443
+REGISTRY_URL=$(oc get routes -l app=registry -n $PROJECT  -o jsonpath='{.items[0].spec.host}')
 
-mvn clean quarkus:dev -Dbootstrap.url=$BOOTSTRAP_URL  -Dproducer.pwd=$PRODUCER_PWD
+mvn clean quarkus:dev -Dbootstrap.url=$BOOTSTRAP_URL  -Dproducer.pwd=$PRODUCER_PWD -Dregistry.url=$REGISTRY_URL
 ----
 
 === Starting the Consumer
@@ -80,23 +81,60 @@ mvn clean quarkus:dev -Dbootstrap.url=$BOOTSTRAP_URL  -Dproducer.pwd=$PRODUCER_P
 PROJECT=kafka-cluster
 CONSUMER_PWD=$(oc get secret consumer -n $PROJECT -o jsonpath='{.data.password}' | base64 -d )
 BOOTSTRAP_URL=$(oc get route my-cluster-kafka-bootstrap -n $PROJECT -o jsonpath='{.spec.host}'):443
-REGISTRY_URL=$(oc get routes -l app=registry -o jsonpath='{.items[0].spec.host}')
+REGISTRY_URL=$(oc get routes -l app=registry -o jsonpath='{.items[0].spec.host}' -n $PROJECT)
 
 mvn clean quarkus:dev -Dbootstrap.url=$BOOTSTRAP_URL  -Dconsumer.pwd=$CONSUMER_PWD -Dregistry.url=$REGISTRY_URL
 ----
 
 === Testing
 
+
+==== Quotes
+
 First monitor the stream output:
 
 ----
-curl  http://localhost:8080/quotes
+curl  http://localhost:8081/quotes
 ----
 
 Then start sending requests:
 
 ----
 curl  http://localhost:8080/quotes/request -X POST
+----
+
+
+==== Movies
+
+This use case examplifies the use of Schema Registry.
+
+Consumer:
+----
+curl -N http://localhost:8081/consumed-movies
+----
+
+Producer:
+----
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"title":"The Shawshank Redemption","year":1994}' \
+  http://localhost:8080/movies
+
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"title":"The Godfather","year":1972}' \
+  http://localhost:8080/movies
+
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"title":"The Dark Knight","year":2008}' \
+  http://localhost:8080/movies
+
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"title":"12 Angry Men","year":1957}' \
+  http://localhost:8080/movies
+
 ----
 
 == Additional information
