@@ -29,7 +29,7 @@
 
     - name: Include AMQ Streams role
       ansible.builtin.include_role:
-        name: streams
+        name: kafka
 
     - name: Include Grafana role
       ansible.builtin.include_role:
