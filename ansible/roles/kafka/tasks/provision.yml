@@ -42,7 +42,7 @@
         name: amq-streams
         namespace: '{{ cluster_project }}'
       spec:
-        channel: '{{ streams_operator_channel }}'
+        channel: '{{ kafka_operator_channel }}'
         installPlanApproval: Automatic
         name: amq-streams
         source: redhat-operators

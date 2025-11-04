@@ -28,8 +28,8 @@ metadata:
     strimzi.io/node-pools: enabled
 spec:
   kafka:
-    version: {{ streams_kafka_version }}
-    metadataVersion: "{{ streams_kafka_kraft_version }}"
+    version: {{ kafka_version }}
+    metadataVersion: "{{ kafka_kraft_version }}"
     authorization:
       type: simple
     listeners:
