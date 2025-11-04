@@ -23,7 +23,7 @@
         name: amq-streams-console
         namespace: openshift-operators
       spec:
-        channel: alpha
+        channel: amq-streams-3.x
         installPlanApproval: Automatic
         name: amq-streams-console
         source: redhat-operators
@@ -38,7 +38,7 @@
     kind: Pod
     namespace: openshift-operators
     label_selectors:
-      - app.kubernetes.io/instance=amq-streams-console-operator-v2.9.0-5
+      - app.kubernetes.io/instance=amq-streams-console-operator-v3.0.1-3
     field_selectors:
       - status.phase=Running
   register: r_streams_pod
