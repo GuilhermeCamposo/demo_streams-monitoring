@@ -5,3 +5,4 @@ extra-vars.yml
 target/
 *.iml
 .vscode
+.ansible

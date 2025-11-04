@@ -37,7 +37,7 @@
 
     - name: Include Console role
       ansible.builtin.include_role:
-        name: console
+        name: kafka-console
 
     - name: Include Service Registry
       ansible.builtin.include_role:
