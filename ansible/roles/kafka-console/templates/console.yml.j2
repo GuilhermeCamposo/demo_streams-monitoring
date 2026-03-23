@@ -5,12 +5,6 @@ metadata:
 spec:
   hostname: my-console-{{ console_project }}.{{ route_subdomain }}
   kafkaClusters:
-    - name: my-cluster
+    - name: {{ streams_kafka_cluster_name}}
       namespace: {{ console_project }} 
       listener: console 
-      properties:
-        values: [] 
-        valuesFrom: [] 
-      credentials:
-        kafkaUser:
-          name: ui 

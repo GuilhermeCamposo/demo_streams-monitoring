@@ -4,7 +4,7 @@ Automation to deploy the AMQ Streams Monitoring Demo.
 
 [NOTE]
 ====
-Last tested with OpenShift 4.17.
+Last tested with OpenShift 4.20
 ====
 
 == Tools available
@@ -55,7 +55,7 @@ This demo comes with to applications that simulates a consumer and producer rela
 To connect the applications from outside the OpenShift cluster you first need the certificate for the TLS connection:
 
 ----
-PROJECT=kafka-cluster
+PROJECT=streams
 
 oc extract -n $PROJECT secret/my-cluster-cluster-ca-cert --keys ca.crt --to /tmp/
 keytool -keystore /tmp/client-truststore.jks -alias CARoot -import -file /tmp/ca.crt -storepass kafka1 -noprompt
@@ -67,7 +67,7 @@ The keystore will be used by the applications to trust the certificate in the co
 === Starting the Producer
 
 ----
-PROJECT=kafka-cluster
+PROJECT=streams
 PRODUCER_PWD=$(oc get secret producer -n $PROJECT  -o jsonpath='{.data.password}' | base64 -d )
 BOOTSTRAP_URL=$(oc get route my-cluster-kafka-bootstrap -n $PROJECT -o jsonpath='{.spec.host}'):443
 REGISTRY_URL=$(oc get routes -l app=registry -n $PROJECT  -o jsonpath='{.items[0].spec.host}')
@@ -78,7 +78,7 @@ mvn clean quarkus:dev -Dbootstrap.url=$BOOTSTRAP_URL  -Dproducer.pwd=$PRODUCER_P
 === Starting the Consumer
 
 ----
-PROJECT=kafka-cluster
+PROJECT=streams
 CONSUMER_PWD=$(oc get secret consumer -n $PROJECT -o jsonpath='{.data.password}' | base64 -d )
 BOOTSTRAP_URL=$(oc get route my-cluster-kafka-bootstrap -n $PROJECT -o jsonpath='{.spec.host}'):443
 REGISTRY_URL=$(oc get routes -l app=registry -o jsonpath='{.items[0].spec.host}' -n $PROJECT)
