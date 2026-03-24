@@ -41,10 +41,10 @@
       - app.kubernetes.io/instance=amq-streams-console-operator-v3.1.0-10
     field_selectors:
       - status.phase=Running
-  register: r_streams_pod
+  register: console_pod
   retries: 10
   delay: 10
-  until: r_streams_pod.resources | list | length == 1
+  until: console_pod.resources | list | length == 1
 
 - name: Evaluate Console CR
   kubernetes.core.k8s:

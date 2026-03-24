@@ -13,7 +13,7 @@ Last tested with OpenShift 4.20
 * AMQ Streams Operator
 * AMQ Streams Console
 * Grafana Operator
-
+* Apicurio Registry
 
 == Install The Demo Using Ansible
 

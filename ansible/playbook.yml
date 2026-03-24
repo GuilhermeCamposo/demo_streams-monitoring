@@ -31,9 +31,9 @@
       ansible.builtin.include_role:
         name: kafka
 
-    # - name: Include Grafana role
-    #   ansible.builtin.include_role:
-    #     name: grafana
+    - name: Include Grafana role
+      ansible.builtin.include_role:
+        name: grafana
 
     - name: Include Console role
       ansible.builtin.include_role:
