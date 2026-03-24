@@ -94,7 +94,7 @@ mvn clean quarkus:dev -Dbootstrap.url=$BOOTSTRAP_URL  -Dconsumer.pwd=$CONSUMER_P
 First monitor the stream output:
 
 ----
-curl  http://localhost:8081/quotes
+curl  http://localhost:8080/quotes
 ----
 
 Then start sending requests:
