@@ -37,11 +37,11 @@
 
     - name: Include Console role
       ansible.builtin.include_role:
-        name: kafka-console
+        name: console
 
-    # - name: Include Service Registry
-    #   ansible.builtin.include_role:
-    #     name: apicurio-registry
-    #     apply:
-    #       tags: [registry]
-    #   tags: [registry]
+    - name: Include Schema Registry
+      ansible.builtin.include_role:
+        name: registry
+        apply:
+          tags: [registry]
+      tags: [registry]
