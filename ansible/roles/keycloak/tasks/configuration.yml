@@ -1,0 +1,10 @@
+- name: Evaluate Keycloak Realms
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: false
+    state: present
+    namespace: '{{ keycloak_project }}'
+    resource_definition: "{{ lookup('template', item) }}"
+  loop:
+    - console-realm.yml.j2

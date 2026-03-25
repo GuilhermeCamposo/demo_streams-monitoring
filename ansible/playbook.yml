@@ -8,6 +8,11 @@
     streams_kafka_cluster_name: my-cluster
     grafana_user: admin
     grafana_password: admin
+
+    streamshub_keycloak_client_id: streamshub
+    streamshub_keycloak_client_secret: 9IAuKgbRcEUTU4mjeUUTY25P6IKo0B6L
+    streamshub_keycloak_realm: streamshub
+
     insecure_skip_tls_verify: true
     verify_tls: false
     delete_demo: false
@@ -38,6 +43,10 @@
     - name: Include Console role
       ansible.builtin.include_role:
         name: console
+
+    - name: Include Keycloak role
+      ansible.builtin.include_role:
+        name: keycloak
 
     - name: Include Schema Registry
       ansible.builtin.include_role:

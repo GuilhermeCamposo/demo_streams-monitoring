@@ -7,8 +7,8 @@
     kind: ServiceAccount
     name: grafana-sa
     namespace: '{{ grafana_project }}'
-  register: _cr
-  until: _cr.resources | list | length == 1
+  register: grafana_cr
+  until: grafana_cr.resources | list | length == 1
   retries: 10
   delay: 30
 
@@ -19,8 +19,8 @@
     - token is not none
     - token|trim() != ""
   ignore_errors: false
-  register: r_login
-  changed_when: r_login.rc != 0
+  register: grafana_login
+  changed_when: grafana_login.rc != 0
 
 - name: Generate Long Live Token for SA
   ansible.builtin.command: "oc create token {{ grafana_sa_name }} --duration=100000h -n {{ grafana_project }}"
@@ -29,12 +29,12 @@
     - token is not none
     - token|trim() != ""
   ignore_errors: false
-  register: r_create_token
-  changed_when: r_create_token.rc != 0
+  register: grafana_create_token
+  changed_when: grafana_create_token.rc != 0
 
 - name: Set SA Token
   ansible.builtin.set_fact:
-    grafana_token: "{{ r_create_token.stdout }}"
+    grafana_token: "{{ grafana_create_token.stdout }}"
 
 - name: Evaluate Grafana ServiceAccount permissons
   kubernetes.core.k8s:
