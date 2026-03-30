@@ -6,7 +6,7 @@ spec:
   hostname: my-console-{{ console_project }}.{{ route_subdomain }}
   security:
     oidc:
-      authServerUrl: https://keycloak-streams-keycloak.apps.cluster-njvw4.dynamic.redhatworkshops.io/realms/streamshub/protocol/openid-connect/auth 
+      authServerUrl: https://keycloak-{{ keycloak_project }}.{{ route_subdomain }}/realms/streamshub/
       clientId: streamshub
       clientSecret: 
         valueFrom:
@@ -16,28 +16,10 @@ spec:
     subjects:
       - claim: groups
         include:
-          - streamshub-devs
-        roleNames: 
-          - developers
-      - claim: groups
-        include:
           - streamshub-admins
         roleNames:
           - administrators
     roles:
-      - name: developers
-        rules:
-          - resources:
-              - kafkas
-            resourceNames:
-                # exact
-              - dev-cluster-a
-                # wildcard
-              - com.example.team.*
-                # regular expression
-              - /qa-cluster-[xy]/
-            privileges:
-              - 'ALL'
       - name: administrators
         rules:
           - resources:
@@ -48,3 +30,20 @@ spec:
     - name: {{ streams_kafka_cluster_name}}
       namespace: {{ console_project }} 
       listener: console 
+      credentials:
+        kafkaUser:
+          name: ui
+      security:
+        roles:
+          - name: administrators
+            rules:
+              - privileges:
+                  - LIST
+                  - GET
+                resources:
+                  - topics
+                  - topics/records
+                  - consumerGroups
+                  - rebalances
+                  - nodes
+                  - nodes/configs   

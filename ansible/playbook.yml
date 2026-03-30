@@ -10,8 +10,10 @@
     grafana_password: admin
 
     streamshub_keycloak_client_id: streamshub
-    streamshub_keycloak_client_secret: 9IAuKgbRcEUTU4mjeUUTY25P6IKo0B6L
+    streamshub_keycloak_client_secret: 9IAuKgbRcEUTU4mjeUUTY25P6IKo0B6L # not a real secret, just for demo purposes
     streamshub_keycloak_realm: streamshub
+
+    keycloak_project: streams-keycloak
 
     insecure_skip_tls_verify: true
     verify_tls: false

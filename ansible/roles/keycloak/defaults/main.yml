@@ -1,3 +1,2 @@
 keycloak_user_username: admin
 keycloak_user_password: password
-keycloak_project: streams-keycloak
