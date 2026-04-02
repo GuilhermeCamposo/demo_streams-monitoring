@@ -46,6 +46,15 @@
   delay: 10
   until: console_pod.resources | list | length == 1
 
+- name: Evaluate Streamshub Keycloakc client secret
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: false
+    state: present
+    namespace: '{{ console_project }}'
+    resource_definition: "{{ lookup('template', 'keycloak-secret.yml.j2') }}"
+
 - name: Evaluate Console CR
   kubernetes.core.k8s:
     api_key: '{{ token }}'

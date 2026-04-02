@@ -6,7 +6,7 @@ spec:
   hostname: my-console-{{ console_project }}.{{ route_subdomain }}
   security:
     oidc:
-      authServerUrl: https://keycloak-{{ keycloak_project }}.{{ route_subdomain }}/realms/streamshub/
+      authServerUrl: https://keycloak-{{ keycloak_project }}.{{ route_subdomain }}/realms/streamshub
       clientId: streamshub
       clientSecret: 
         valueFrom:
