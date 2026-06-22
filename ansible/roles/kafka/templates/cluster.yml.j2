@@ -1,9 +1,9 @@
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: KafkaNodePool
 metadata:
   name: dual-role
   labels:
-    strimzi.io/cluster: my-cluster
+    strimzi.io/cluster: {{ streams_kafka_cluster_name }}
 spec:
   replicas: 3
   roles:
@@ -18,8 +18,7 @@ spec:
         deleteClaim: false
         kraftMetadata: shared
 ---
-
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: Kafka
 metadata:
   name: {{ streams_kafka_cluster_name }}

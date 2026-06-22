@@ -11,7 +11,7 @@
     - producer-user.yml
     - kafka-ui_user.yml
 
-- name: Evaluate a_quotes Topic
+- name: Evaluate Topics
   kubernetes.core.k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
@@ -23,3 +23,21 @@
     - quote-topic.yml
     - quote-request-topic.yml
     - movies-topic.yml
+
+- name: Evaluate Kafka Connect Cluster
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: false
+    state: present
+    namespace: '{{ cluster_project }}'
+    resource_definition: "{{ lookup('template', 'kafka-connect-cluster.yml.j2') }}"
+
+- name: Evaluate Kafka Connector
+  kubernetes.core.k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: false
+    state: present
+    namespace: '{{ cluster_project }}'
+    resource_definition: "{{ lookup('file', 'connector.yml') }}"

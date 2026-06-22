@@ -25,18 +25,24 @@
       when:
         - (server is undefined) or (token is undefined) or (server | length == 0) or (token | length == 0)
       ignore_errors: false
+      tags: [kafka, console, registry]
 
     - name: Define domain
       ansible.builtin.set_fact:
         domain: "{{ server | regex_replace('https://api.') | regex_replace(':6443') }}"
+      tags: [kafka, console, registry]
 
     - name: Set Subdomain
       ansible.builtin.set_fact:
         route_subdomain: "apps.{{ domain }}"
+      tags: [kafka, console, registry]
 
     - name: Include AMQ Streams role
       ansible.builtin.include_role:
         name: kafka
+        apply:
+          tags: [kafka]
+      tags: [kafka]
 
     - name: Include Grafana role
       ansible.builtin.include_role:
@@ -45,6 +51,9 @@
     - name: Include Console role
       ansible.builtin.include_role:
         name: console
+        apply:
+          tags: [console]
+      tags: [console]
 
     - name: Include Keycloak role
       ansible.builtin.include_role:

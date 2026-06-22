@@ -1,4 +1,4 @@
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: KafkaUser
 metadata:
   name: producer
@@ -41,3 +41,44 @@ spec:
           - Write
           - Describe
         host: "*"
+# ACLs for Kafka Connect        
+      - resource:
+          type: topic
+          name: connect-cluster-offsets
+          patternType: literal
+        operations: 
+          - Read
+          - Write 
+          - Create 
+          - Describe
+          - DescribeConfigs
+        host: "*"
+      - resource:
+          type: topic
+          name: connect-cluster-configs
+          patternType: literal
+        operations:
+          - Read
+          - Write 
+          - Create 
+          - Describe
+          - DescribeConfigs
+        host: "*"
+      - resource:
+          type: topic
+          name: connect-cluster-status
+          patternType: literal
+        operations:
+          - Read
+          - Write 
+          - Create 
+          - Describe
+          - DescribeConfigs
+        host: "*"
+      - resource:
+          type: group
+          name: connect-cluster
+          patternType: literal
+        operations: 
+          - Read
+        host: "*"        
