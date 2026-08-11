@@ -40,15 +40,15 @@
     validate_certs: '{{ verify_tls }}'
     api_version: apiextensions.k8s.io/v1
     kind: CustomResourceDefinition
-    name: apicurioregistries.registry.apicur.io
+    name: apicurioregistries3.registry.apicur.io
   register: registry_crd
   until: registry_crd.resources | list | length == 1
   retries: 10
   delay: 30
 
-- name: Set Apicurio Registry
-  ansible.builtin.set_fact:
-    registry_host: "registry.{{ apicurio_registry_project }}.router-default.{{ route_subdomain }}"
+# - name: Set Apicurio Registry
+#   ansible.builtin.set_fact:
+#     registry_host: "registry.{{ apicurio_registry_project }}.router-default.{{ route_subdomain }}"
 
 - name: Evaluate Kafka resources
   kubernetes.core.k8s:
@@ -62,20 +62,23 @@
     - kafka-topic.yml
     - kafka-user.yml
 
-- name: Evaluate the Service Registry CR
+- name: Evaluate the Registry Resources
   kubernetes.core.k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
     validate_certs: '{{ verify_tls }}'
     state: present
     namespace: '{{ apicurio_registry_project }}'
-    resource_definition: "{{ lookup('template', 'registry.yml.j2') }}"
+    resource_definition: "{{ lookup('template', item) }}"
+  loop:
+    - registry3.yml.j2
+    - routes.yml.j2  
 
-- name: Wait for Service Registry to be running
-  ansible.builtin.uri:
-    url: http://{{ registry_host }}
-    status_code: '200'
-  register: registry_response
-  until: registry_response.status == 200
-  retries: 30
-  delay: 20
+# - name: Wait for Service Registry to be running
+#   ansible.builtin.uri:
+#     url: http://{{ registry_host }}
+#     status_code: '200'
+#   register: registry_response
+#   until: registry_response.status == 200
+#   retries: 30
+#   delay: 20

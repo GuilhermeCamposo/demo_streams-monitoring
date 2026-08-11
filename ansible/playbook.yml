@@ -4,7 +4,7 @@
     cluster_project: streams
     grafana_project: '{{ cluster_project  }}'
     console_project: '{{ cluster_project  }}'
-    apicurio_registry_project: '{{ cluster_project  }}'
+    apicurio_registry_project: '{{ cluster_project }}'
     streams_kafka_cluster_name: my-cluster
     grafana_user: admin
     grafana_password: admin

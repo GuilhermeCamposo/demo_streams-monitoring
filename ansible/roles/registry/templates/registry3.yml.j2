@@ -1,0 +1,40 @@
+apiVersion: registry.apicur.io/v1
+kind: ApicurioRegistry3
+metadata:
+  name: registry
+spec:
+  app:
+    env:
+      - name: APICURIO_KAFKA_COMMON_SECURITY_PROTOCOL
+        value: "SASL_SSL"
+      - name: APICURIO_KAFKA_COMMON_SASL_MECHANISM
+        value: "SCRAM-SHA-512"
+      - name: APICURIO_KAFKA_COMMON_SASL_JAAS_CONFIG
+        valueFrom:
+          secretKeyRef:
+            name: apicurio-user
+            key: sasl.jaas.config  
+    storage:
+      kafkasql:
+        auth:
+          clientIdRef:
+            name: apicurio-user-id
+            key: id
+          clientSecretRef:
+            key: password
+            name: apicurio-user
+        tls:
+          truststoreSecretRef:
+            name: {{ streams_kafka_cluster_name }}-cluster-ca-cert
+          truststorePasswordSecretRef:
+            name: {{ streams_kafka_cluster_name }}-cluster-ca-cert
+        bootstrapServers: {{ streams_kafka_cluster_name }}-kafka-bootstrap.{{ cluster_project }}.svc.cluster.local:9093
+      type: kafkasql    
+    ingress:
+      enabled: false
+  ui:
+    env:
+      - name: REGISTRY_API_URL
+        value: https://registry-app-{{ cluster_project }}.{{ route_subdomain }}/apis/registry/v3
+    ingress:
+      enabled: false

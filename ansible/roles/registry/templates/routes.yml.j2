@@ -1,0 +1,28 @@
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: registry-ui
+spec:
+  to:
+    name: registry-ui-service
+    weight: 100
+    kind: Service
+  host: registry-ui-{{ cluster_project }}.{{ route_subdomain }}
+  tls:
+    insecureEdgeTerminationPolicy: ''
+    termination: edge
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: registry-app
+spec:
+  to:
+    name: registry-app-service
+    weight: 100
+    kind: Service
+  host: registry-app-{{ cluster_project }}.{{ route_subdomain }}
+  tls:
+    insecureEdgeTerminationPolicy: ''
+    termination: edge

@@ -3,8 +3,8 @@ kind: Subscription
 metadata:
   name: service-registry-operator
 spec:
-  channel: 2.x
+  channel: 3.2.x
   installPlanApproval: Automatic
-  name: service-registry-operator
+  name: apicurio-registry-3
   source: redhat-operators
   sourceNamespace: openshift-marketplace
