@@ -4,20 +4,20 @@ Automation to deploy the AMQ Streams Monitoring Demo.
 
 [NOTE]
 ====
-Last tested with OpenShift 4.20
+Last tested with OpenShift 4.21
 ====
 
-== Tools available
+== Tools Available
 
 * OpenShift User Workload Monitoring
 * AMQ Streams Operator 2.9.x
 * AMQ Streams Console 3.x
 * Grafana Operator v5
-* Apicurio Registry 2.x
+* Apicurio Registry 3.x
 
 == Install The Demo Using Ansible
 
-=== Ansible prerequisites
+=== Ansible Prerequisites
 
 Make sure you have Ansible installed and with all dependencies before running the playbook.
 
@@ -36,7 +36,6 @@ ansible-galaxy collection install kubernetes.core
 | server    | https://api.mycluster.opentlc.com:6443             | OpenShift cluster API URL
 |=======================
 
-
 === Deploying the demo
 
 ----
@@ -46,97 +45,6 @@ server=REPLACE_ME
 ansible-playbook -e token=${token} -e server=${server} playbook.yml
 ----
 
-== Using the applications
-
-This demo comes with to applications that simulates a consumer and producer relationship. Those applications can be run using a terminal. Follow the instructions below:
-
-=== Get the certificate for TLS connection
-
-To connect the applications from outside the OpenShift cluster you first need the certificate for the TLS connection:
-
-----
-PROJECT=streams
-
-oc extract -n $PROJECT secret/my-cluster-cluster-ca-cert --keys ca.crt --to /tmp/
-keytool -keystore /tmp/client-truststore.jks -alias CARoot -import -file /tmp/ca.crt -storepass kafka1 -noprompt
-----
-
-The keystore will be used by the applications to trust the certificate in the connection.
-
-
-=== Starting the Producer
-
-----
-PROJECT=streams
-PRODUCER_PWD=$(oc get secret producer -n $PROJECT  -o jsonpath='{.data.password}' | base64 -d )
-BOOTSTRAP_URL=$(oc get route my-cluster-kafka-bootstrap -n $PROJECT -o jsonpath='{.spec.host}'):443
-REGISTRY_URL=$(oc get routes -l app=registry -n $PROJECT  -o jsonpath='{.items[0].spec.host}')
-
-mvn clean quarkus:dev -Dbootstrap.url=$BOOTSTRAP_URL  -Dproducer.pwd=$PRODUCER_PWD -Dregistry.url=$REGISTRY_URL
-----
-
-=== Starting the Consumer
-
-----
-PROJECT=streams
-CONSUMER_PWD=$(oc get secret consumer -n $PROJECT -o jsonpath='{.data.password}' | base64 -d )
-BOOTSTRAP_URL=$(oc get route my-cluster-kafka-bootstrap -n $PROJECT -o jsonpath='{.spec.host}'):443
-REGISTRY_URL=$(oc get routes -l app=registry -o jsonpath='{.items[0].spec.host}' -n $PROJECT)
-
-mvn clean quarkus:dev -Dbootstrap.url=$BOOTSTRAP_URL  -Dconsumer.pwd=$CONSUMER_PWD -Dregistry.url=$REGISTRY_URL
-----
-
-=== Testing
-
-
-==== Quotes
-
-First monitor the stream output:
-
-----
-curl  http://localhost:8080/quotes
-----
-
-Then start sending requests:
-
-----
-curl  http://localhost:8080/quotes/request -X POST
-----
-
-
-==== Movies
-
-This use case examplifies the use of Schema Registry.
-
-Consumer:
-----
-curl -N http://localhost:8081/consumed-movies
-----
-
-Producer:
-----
-curl --header "Content-Type: application/json" \
-  --request POST \
-  --data '{"title":"The Shawshank Redemption","year":1994}' \
-  http://localhost:8080/movies
-
-curl --header "Content-Type: application/json" \
-  --request POST \
-  --data '{"title":"The Godfather","year":1972}' \
-  http://localhost:8080/movies
-
-curl --header "Content-Type: application/json" \
-  --request POST \
-  --data '{"title":"The Dark Knight","year":2008}' \
-  http://localhost:8080/movies
-
-curl --header "Content-Type: application/json" \
-  --request POST \
-  --data '{"title":"12 Angry Men","year":1957}' \
-  http://localhost:8080/movies
-
-----
-
 == Additional information
 
-To add more dashboards for other Strimzi's components, check this https://github.com/strimzi/strimzi-kafka-operator/tree/main/examples/metrics/grafana-dashboards[Git Repository].
+* To add more dashboards for other Strimzi's components, check this https://github.com/strimzi/strimzi-kafka-operator/tree/main/examples/metrics/grafana-dashboards[Git Repository].

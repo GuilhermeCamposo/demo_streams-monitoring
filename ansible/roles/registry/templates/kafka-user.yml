@@ -10,17 +10,37 @@ spec:
   authorization:
     acls:
     - operations:
-        - Read
-        - Write
+        - All
       resource:
         name: kafkasql-journal
         patternType: literal
         type: topic
     - operations:
-        - Read
-        - Write
+        - All
+      resource:
+        name: kafkasql-snapshots
+        patternType: literal
+        type: topic
+    - operations:
+        - All
+      resource:
+        name: registry-events
+        patternType: literal
+        type: topic
+    - operations:
+        - All
       resource:
         name: apicurio-registry-
         patternType: prefix
         type: group
-    type: simple    
+    - operations:
+        - All
+      resource:
+        name: apicurio-
+        patternType: prefix
+        type: group        
+    type: simple
+
+
+
+  

@@ -16,13 +16,6 @@ spec:
             key: sasl.jaas.config  
     storage:
       kafkasql:
-        auth:
-          clientIdRef:
-            name: apicurio-user-id
-            key: id
-          clientSecretRef:
-            key: password
-            name: apicurio-user
         tls:
           truststoreSecretRef:
             name: {{ streams_kafka_cluster_name }}-cluster-ca-cert
